@@ -230,8 +230,7 @@ DrLbl		proc
 
 		mov bx, offset Msg
 		cmp byte ptr [bx], 00h
-		jne @@do
-		jmp @@end
+		je @@end
 
 @@do:		mov al, byte ptr [bx]
 		mov byte ptr es:[di], al
@@ -243,9 +242,9 @@ DrLbl		proc
 @@end:		Ret
 		endp
 ;-------------------------------------------------
-;Enter:		bx - adress of control line
+;Enter:		bx - address of control line
 ;Destroy:	cx
-;Result:	di
+;Result:	di - number of shift cells for left top angle
 ;-------------------------------------------------
 createcoord	proc
 		call putnumindi		;y_coord
@@ -268,7 +267,7 @@ createcoord	proc
 		
 
 ;-------------------------------------------------
-;Enter:		bx - adress in memory
+;Enter:		bx - address in memory
 ;Result:	di - number
 ;Destroy:	dl, cx
 ;-------------------------------------------------
@@ -298,7 +297,7 @@ putnumindi	proc
 ;-------------------------------------------------
 ;Result:	ah = Color
 ;Destroy:	ch
-;Enter:		bx - control part
+;Enter:		bx - address of control part
 ;-------------------------------------------------
 readcol		proc
 		xor ch, ch
@@ -348,6 +347,7 @@ readcol		proc
 
 ;-------------------------------------------------
 ;Destroy:	bx
+;Increase Width_Fr and Heigh_Fr
 ;-------------------------------------------------
 ChSize		proc
 
@@ -363,16 +363,18 @@ ChSize		proc
 		endp
 
 ;-------------------------------------------------
-;Result:	Width_Fr
-;		Heigh_Fr
+;Result:	Width_Fr - width of frame before animation
+;		Heigh_Fr - heigh of frame before animation
+;		cx - count of step in animation
 ;Destroy:	bx, cx, al, di
 ;-------------------------------------------------
 reading		proc
 
 		call putnumindi
 		mov word ptr [Width_Fr], di
+		
 		call putnumindi
-		cmp di, word ptr [Width_Fr]
+		mov word ptr [Heigh_Fr], di
 		ja @@anway
 
 		sub word ptr [Width_Fr], di
