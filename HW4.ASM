@@ -37,13 +37,13 @@ Start:		mov bx, 80h
 ForDrawing:	pop di
 		push di
 		push cx
+		call ChSize
 		call DrBackGrWithSh
 
 		mov cx, 0aaaah
 Temp:		nop
 		loop Temp
 
-		call ChSize
 		pop cx
 		loop ForDrawing
 
@@ -76,11 +76,11 @@ DrBackGrWithSh	proc
 		endp
 
 ;-------------------------------------------------
-;Enter:	di - adress of beginning of line(we will draw here)
-;	es - adress of videosegment
+;Enter:	di - address of beginning of line(we will draw here)
+;	es - address of videosegment
 ;	ah - colour
 ;	dh - second color
-;Result:	di - adress of next line
+;Result:	di - address of next line
 ;Destroy:	al, cx
 ;-------------------------------------------------
 DrFirstLine	proc
@@ -127,8 +127,8 @@ DrEmLn		proc
 		endp
 
 ;-------------------------------------------------
-;Enter:		di - adress of line's beginning
-;		es - adress of video segment
+;Enter:		di - address of line's beginning
+;		es - address of video segment
 ;		bx - count of empty lines
 ;		ah - colour
 ;		dh - second colour
@@ -164,8 +164,8 @@ DrEmptyLines	proc
 		endp
 
 ;-------------------------------------------------
-;Enter:		di - adress of line
-;		es - adress of video segment
+;Enter:		di - address of line
+;		es - address of video segment
 ;		ah - colour
 ;Destroy:	cx, ax, di, al
 ;-------------------------------------------------
@@ -206,7 +206,7 @@ DrLastLine	proc
 
 ;-------------------------------------------------
 ;Enter:		es - videoseg
-;		di - adress of left top angle in video
+;		di - address of left top angle in video
 ;Destroy:	di, bx, al
 ;-------------------------------------------------
 DrLbl		proc
@@ -227,6 +227,7 @@ DrLbl		proc
 		shr bx, 1
 		shl bx, 1
 		add di, bx
+		add di, 2
 
 		mov bx, offset Msg
 		cmp byte ptr [bx], 00h
@@ -375,6 +376,7 @@ reading		proc
 		
 		call putnumindi
 		mov word ptr [Heigh_Fr], di
+		cmp di, word ptr [Width_Fr]
 		ja @@anway
 
 		sub word ptr [Width_Fr], di
