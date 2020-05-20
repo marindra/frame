@@ -61,6 +61,9 @@ Heigh_Fr	dw 0d
 Msg:		db "Don't sleep!", 00h
 
 ;-------------------------------------------------
+;It drows background with ornament and shadow.
+;Enter:		ah - colour
+;		di - address of left top angle
 ;Destroy:	dh, ax, cx, di, bx
 ;-------------------------------------------------
 DrBackGrWithSh	proc
