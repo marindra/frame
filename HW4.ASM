@@ -102,13 +102,11 @@ DrFirstLine	proc
 		xchg ah, dh
 		add di, 160d
 		stosw
-		sub di, 162d
 		xchg ah, dh
 
 		sub di, word ptr [Width_Fr]
 		sub di, word ptr [Width_Fr]
-		sub di, 4
-		add di, 160d
+		sub di, 6
 
 		Ret
 		endp
