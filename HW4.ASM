@@ -208,7 +208,7 @@ DrLastLine	proc
 ;-------------------------------------------------
 ;Enter:		es - videoseg
 ;		di - address of left top angle in video
-;Destroy:	di, bx, al
+;Destroy:	di, bx, al, dx
 ;-------------------------------------------------
 DrLbl		proc
 		mov bx, word ptr [Heigh_Fr]
