@@ -426,6 +426,7 @@ readsymbols	proc
 		add bx, 2
 		mov al, byte ptr [bx]
 		mov byte ptr [HorLine], al
+		jmp @@end
 
 @@isit:		mov al, byte ptr [bx + 1]
 		cmp al, ' '
