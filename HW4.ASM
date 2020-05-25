@@ -5,12 +5,6 @@ org 100h
 
 ;-------------------------------------------------
 VIDEOSEG	equ 0b800h
-LeftTopAngle	equ 201d
-RightTopAngle	equ 187d
-LeftBotAngle	equ 200d
-RightBotAngle	equ 188d
-HorLine		equ 205d
-VertLine	equ 186d
 LenLbl		equ 12d
 ;-------------------------------------------------
 
@@ -33,6 +27,7 @@ Start:		mov bx, 80h
 
 		call reading		;read width and heigh and
 					;set count of steps
+		call readsymbols
 
 ForDrawing:	pop di
 		push di
@@ -57,6 +52,12 @@ Temp:		nop
 
 Width_Fr	dw 25d
 Heigh_Fr	dw 0d
+LeftTopAngle	db 201d
+RightTopAngle	db 187d
+LeftBotAngle	db 200d
+RightBotAngle	db 188d
+HorLine		db 205d
+VertLine	db 186d
 
 Msg:		db "Don't sleep!", 00h
 
@@ -88,15 +89,15 @@ DrBackGrWithSh	proc
 ;-------------------------------------------------
 DrFirstLine	proc
 
-		mov al, LeftTopAngle
+		mov al, byte ptr [LeftTopAngle]
 		cld
 		stosw
 
 		mov cx, word ptr [Width_Fr]
-		mov al, HorLine
+		mov al, byte ptr [HorLine]
 		rep stosw
 
-		mov al, RightTopAngle
+		mov al, byte ptr [RightTopAngle]
 		stosw
 
 		xchg ah, dh
@@ -139,13 +140,13 @@ DrEmptyLines	proc
 
 		mov cx, word ptr [Width_Fr]
 
-		mov al, VertLine
+		mov al, byte ptr [VertLine]
 		stosw
 
 		mov al, ' '
 		rep stosw
 
-		mov al, VertLine
+		mov al, byte ptr [VertLine]
 		stosw
 
 		add di, 160d
@@ -172,7 +173,7 @@ DrEmptyLines	proc
 ;-------------------------------------------------
 DrLastLine	proc
 
-		mov al, LeftBotAngle
+		mov al, byte ptr [LeftBotAngle]
 		stosw
 		add di, 160d
 		xchg ah, dh
@@ -180,7 +181,7 @@ DrLastLine	proc
 		sub di, 162d
 		xchg ah, dh
 
-		mov al, HorLine
+		mov al, byte ptr [HorLine]
 		mov cx, word ptr [Width_Fr]
 		rep stosw
 
@@ -194,7 +195,7 @@ DrLastLine	proc
 		xchg ah, dh
 		sub di, 162d
 
-		mov al, RightBotAngle
+		mov al, byte ptr [RightBotAngle]
 		stosw
 
 		add di, 160d
@@ -389,6 +390,48 @@ reading		proc
 		mov cx, word ptr [Width_Fr]
 		mov word ptr [Width_Fr], di
 		mov word ptr [Heigh_Fr], 0
+
+@@end:		Ret
+		endp
+
+;-------------------------------------------------
+;Enter:		bx - address of control line
+;Destroy:	al, bx
+;-------------------------------------------------
+readsymbols	proc
+
+		mov al, byte ptr [bx]
+
+		cmp al, '0'
+		je @@isit
+
+@@back:		mov byte ptr [LeftTopAngle], al
+
+		add bx, 2
+		mov al, byte ptr [bx]
+		mov byte ptr [RightTopAngle], al
+
+		add bx, 2
+		mov al, byte ptr [bx]
+		mov byte ptr [LeftBotAngle], al
+
+		add bx, 2
+		mov al, byte ptr [bx]
+		mov byte ptr [RightBotAngle], al
+
+		add bx, 2
+		mov al, byte ptr [bx]
+		mov byte ptr [VertLine], al
+
+		add bx, 2
+		mov al, byte ptr [bx]
+		mov byte ptr [HorLine], al
+
+@@isit:		mov al, byte ptr [bx + 1]
+		cmp al, ' '
+		jne @@end
+		mov al, byte ptr [bx]
+		jmp @@back
 
 @@end:		Ret
 		endp
